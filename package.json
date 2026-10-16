@@ -1,0 +1,21 @@
+{
+  "name": "spotify-claude-starter",
+  "version": "0.1.0",
+  "description": "Local MCP server that lets Claude explore your Spotify listening history and build playlists.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "auth": "node src/auth.js",
+    "fetch-data": "node src/fetchData.js",
+    "ingest-history": "node src/ingestHistory.js",
+    "mcp": "node src/mcpServer.js",
+    "check": "node scripts/selfCheck.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "open": "^10.1.0",
+    "zod": "^4.4.3"
+  }
+}
