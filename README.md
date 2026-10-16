@@ -245,3 +245,7 @@ covers it. What mattered here:
 
 Built with Claude Code. Everything here is plain JavaScript (ES modules), about 1,700 lines, including the self-check. Reading `src/historyTools.js`
 first is the fastest way to see how it works.
+
+## License
+
+MIT. See [LICENSE](LICENSE). This is an unofficial personal project and is not affiliated with Spotify.
