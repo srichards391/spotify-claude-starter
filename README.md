@@ -29,7 +29,7 @@ for you and explain errors as they come up.
 - **Spotify Premium.** Since Spotify's February 2026 API changes, the owner of a developer app must have Premium,
   or the app stops working.
 - **Node.js 18+** (this was built and tested on Node 24, on macOS. Windows and Linux are untested).
-- **Claude Desktop** or **Claude Code**, which can connect to local MCP servers.
+- **Claude Code** (verified; see step 6). Claude Desktop can also run local MCP servers, but see the caveat in step 6.
 
 ---
 
@@ -95,9 +95,18 @@ pass means the pipeline is sound for you. If the MCP step fails it prints the se
 
 ### 6. Connect it to Claude
 
-**Claude Desktop:** edit the config file (macOS:
-`~/Library/Application Support/Claude/claude_desktop_config.json`; Windows: `%APPDATA%\Claude\claude_desktop_config.json`)
-and add, using the **absolute** path to this folder:
+**Claude Code (verified):** from anywhere, with the **absolute** path to this folder:
+
+```bash
+claude mcp add spotify-history -- node /absolute/path/to/spotify-claude-starter/src/mcpServer.js
+claude mcp list
+```
+
+`claude mcp list` should show `spotify-history ... Connected`. Add `--scope user` to `claude mcp add` to make it
+available in every project, not just the current one.
+
+**Claude Desktop (not verified, and it may not stick):** the usual advice is to add this to `claude_desktop_config.json`
+(macOS: `~/Library/Application Support/Claude/claude_desktop_config.json`; Windows: `%APPDATA%\Claude\claude_desktop_config.json`):
 
 ```json
 {
@@ -110,12 +119,10 @@ and add, using the **absolute** path to this folder:
 }
 ```
 
-If the file already has other settings, just add the `mcpServers` block alongside them. Then **fully quit and reopen**
-Claude Desktop (closing the window isn't enough). Do the same after any change to the server code.
-
-**Claude Code:** `claude mcp add spotify-history -- node /absolute/path/to/spotify-claude-starter/src/mcpServer.js`
-
-Config details vary a little between client versions. If the tools don't show up, see Troubleshooting.
+On at least one recent Desktop build (macOS), hand-editing this file did **not** work: the app rewrote the file with its
+own settings, the `mcpServers` block disappeared, and the app's logs showed no attempt to start the server. If you try
+Desktop, use Settings -> Developer -> Edit Config, fully quit and reopen the app, and then check that the block is still
+there and that a `mcp-server-spotify-history.log` appears in `~/Library/Logs/Claude/`. If not, use Claude Code.
 
 ### 7. Try it
 
@@ -215,7 +222,7 @@ covers it. What mattered here:
 | `No tokens found` / token errors | run `npm run auth` again |
 | Everything starts returning 403 | is the app owner's Premium still active? Otherwise check the table above for a removed endpoint |
 | `No listening history found` | unzip into `data/streaming-history-raw/` and run `npm run ingest-history` |
-| Tools missing in Claude | use an absolute path; fully quit and reopen the app; make sure the JSON config is valid; run `node src/mcpServer.js` yourself to see any startup error; run `npm run check` |
+| Tools missing in Claude | use an absolute path; with Claude Code run `claude mcp list`; with Desktop, check the `mcpServers` block survived (the app can overwrite its config) and look for a log in `~/Library/Logs/Claude/`; run `node src/mcpServer.js` yourself to see any startup error; run `npm run check` |
 | Some playlists show no tracks | expected, see step 3 |
 
 ## Known limitations
